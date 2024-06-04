@@ -1,0 +1,160 @@
+<html>
+<head>
+  
+<link rel="stylesheet" href="index.css">
+</head>
+<div class="slidecontainer">
+<button  id="button" class="button"></button><body>Transparency</body>
+
+ <input type = "range" min = "0.0" max = "1.0" step = "0.1" onchange = "changeValue(this.value)" id="tansp" class="tansp">
+  <output></output>
+
+<button  id="button2" class="button2"></button><body>Roughness</body>
+
+ <input type = "range" min = "0.0" max = "60.0" step = "0.1" onchange = "changeValue(this.value)" id="rough" class="rough">
+  <output1></output1>
+  <button id="button3" class="button3"></button><body>Emission</body>
+
+ <input type = "range" min = "0.0" max = "1.0" step = "0.1" onchange = "changeValue(this.value)" id="emission" class="emission">
+  <output3></output3>
+</div>
+<label for="favcolor">Select your favorite color:</label>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css"/>
+<script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js"></script>
+<input type="text" data-coloris>
+<script type="module">
+
+  var favorite = new THREE.Color();
+ 
+  var update_opacity = 0.5;
+  var update_rough =1.0;
+  var update_emission = 0;
+  var array_row_1 =[0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0];
+
+  import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.module.js";
+  import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js";
+
+  import { RoundedBoxGeometry } from "https://threejsfundamentals.org/threejs/resources/threejs/r132/examples/jsm/geometries/RoundedBoxGeometry.js";
+
+   const renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: true,
+    });
+  
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+myDraw();
+function myDraw(){
+  const scene = new THREE.Scene();
+  scene.remove.apply(scene, scene.children);
+  scene.background = new THREE.Color( 0xf0f0f0 );
+  const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+  );
+  const controls = new OrbitControls(camera, renderer.domElement);
+//  const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+//  scene.add( light );
+  
+  
+// White directional light at half intensity shining from the top.
+//co
+//scene.add( directionalLight );
+  const light = new THREE.DirectionalLight( 0xffffff, 3 );
+				light.position.set( 1, 1, 1 ).normalize();
+				scene.add( light );
+  const grid = new THREE.Group();
+
+  const cubeSize = 0.9;
+  const size = 5;
+  const gap = 0.01;
+const geometry = new RoundedBoxGeometry( 1, 1,1,.8,0.2);
+  
+    const materialblue = new THREE.MeshPhongMaterial( { color : favorite ,transparent: true,opacity : update_opacity , specular : 'white', metal : true ,shininess : update_rough,emissive : favorite,emissiveIntensity : update_emission})
+  const cubes= new THREE.InstancedMesh(
+    geometry,
+    materialblue,
+    Math.pow(size, 3)
+  );
+  cubes.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  grid.add(cubes);
+
+  scene.add(grid);
+
+  const cube = new THREE.Object3D();
+  const center = (size + gap * (size - 1)) * -0.5;
+
+  grid.position.set(center, center, center);
+
+  camera.position.z = size * 1.5;
+
+  (function animate() {
+    requestAnimationFrame(animate);
+
+    let i = 0;
+    for (let x = 0; x < size; x++) {
+      for (let y = 0; y < size; y++) {
+        for (let z = 0; z < size; z++) {
+          cube.position.set(x, y, z);
+          cube.updateMatrix();
+          if (array_row_1[i]==1){
+          cubes.setMatrixAt(i, cube.matrix);
+          }
+          i++;
+        }
+      }
+    }
+
+    cubes.instanceMatrix.needsUpdate = true;
+
+    controls.update();
+    renderer.render(scene, camera);
+  })();
+}
+let i = document.querySelector('#tansp'),
+    o = document.querySelector('output');
+
+o.innerHTML = i.value;
+
+i.addEventListener('input', function () {
+  o.innerHTML = i.value;
+  update_opacity = i.value;
+  
+  
+  myDraw();
+  
+}, false);
+let i2 = document.querySelector('#rough'),
+    o2 = document.querySelector('output1');
+
+o2.innerHTML = i2.value;
+
+i2.addEventListener('input', function () {
+  o2.innerHTML = i2.value;
+  update_rough = i2.value;
+  
+  
+  myDraw();
+  
+}, false);
+let i3= document.querySelector('#emission'),
+    o3 = document.querySelector('output3');
+
+o3.innerHTML = i3.value;
+
+i3.addEventListener('input', function () {
+  o3.innerHTML = i3.value;
+  update_emission = i3.value;
+  
+  
+  myDraw();
+  
+}, false);
+document.addEventListener('coloris:pick', event => {
+  favorite = event.detail.color;
+});
+
+</script>
+</html>
