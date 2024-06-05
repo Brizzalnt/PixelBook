@@ -1,0 +1,33 @@
+
+<html>
+<body>
+
+<textarea class="demo"id="demo"rows=1000 cols=1000></textarea>
+
+<script>
+var text;
+var int = 1;
+text = "<pixelbook>";
+for (let i =0 ;i<32768;i++){
+text =text +"<pixelnumber>" + int +"</pixelnumber>" +
+  "<rs>30</rs>" +
+"<tr>0</tr>" +
+"<em>0</em>" +
+  "<co>255,0,0</co>" ;
+
+int = int +1;
+};
+  
+text = text + "</pixelbook>";
+
+
+
+document.getElementById("demo").value = text;
+
+  
+  
+  
+  </script>
+
+</body>
+</html>
